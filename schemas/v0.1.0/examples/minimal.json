@@ -1,0 +1,22 @@
+{
+  "$schema": "https://vitaeflow.github.io/vitaeflow-schemas/schemas/v0.1.0/vitaeflow.schema.json",
+  "specVersion": "0.1.0",
+  "meta": {
+    "language": "en",
+    "country": "US"
+  },
+  "resume": {
+    "basics": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "jane.doe@example.com"
+    },
+    "experience": [
+      {
+        "position": "Software Engineer",
+        "company": "Tech Corp",
+        "startDate": "2022-01-01"
+      }
+    ]
+  }
+}

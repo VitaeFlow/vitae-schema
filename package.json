@@ -1,10 +1,15 @@
 {
   "name": "@vitaeflow/vitae-schema",
   "version": "0.1.0",
-  "description": "Official JSON Schema specification for Vitaeflow resume standard - Pure JSON, multi-language compatible",
+  "description": "Official JSON Schema specification for VitaeFlow resume standard - Pure JSON, multi-language compatible",
+  "main": "registry.json",
+  "types": "index.d.ts",
   "files": [
     "schemas/",
-    "registry.json"
+    "registry.json",
+    "index.js",
+    "index.d.ts",
+    "README.md"
   ],
   "scripts": {
     "test": "node scripts/validate-examples.js",
@@ -12,21 +17,42 @@
     "validate-schema": "node scripts/validate-schema.js",
     "docs": "node scripts/generate-docs.js",
     "check-versions": "node scripts/check-versions.js",
-    "prepare": "npm test"
+    "prepare": "npm test",
+    "prepublishOnly": "npm run validate && npm test",
+    "prepack": "node scripts/build-package.js"
   },
+  "homepage": "https://vitaeflow.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vitaeflow/vitae-schema.git"
+    "url": "git+https://github.com/vitaeflow/vitae-schema.git",
+    "directory": "packages/vitae-schema"
+  },
+  "bugs": {
+    "url": "https://github.com/vitaeflow/vitae-schema/issues"
   },
   "keywords": [
     "vitaeflow",
     "resume",
     "cv",
     "schema",
-    "json-schema"
+    "json-schema",
+    "ats",
+    "recruitment",
+    "structured-data",
+    "pdf",
+    "validation",
+    "typescript",
+    "hiring"
   ],
-  "author": "Vitaeflow",
+  "author": {
+    "name": "VitaeFlow",
+    "email": "hello@vitaeflow.org",
+    "url": "https://vitaeflow.org"
+  },
   "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "devDependencies": {
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",

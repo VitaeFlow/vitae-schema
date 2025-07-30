@@ -1,6 +1,15 @@
 {
-  "latest": "v0.1.0",
-  "versions": ["v0.1.0"],
+  "latest": "0.1.0",
+  "versions": [
+    {
+      "version": "0.1.0",
+      "status": "stable",
+      "releaseDate": "2025-07-31",
+      "deprecated": false,
+      "deprecationMessage": null,
+      "changelog": "Initial release of VitaeFlow schema with comprehensive resume structure"
+    }
+  ],
   "schemas": {
     "v0.1.0": {
       "path": "schemas/v0.1.0/vitaeflow.schema.json",
