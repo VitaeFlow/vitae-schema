@@ -1,0 +1,725 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vitaeflow.github.io/vitaeflow-schemas/schemas/v0.1.0/vitaeflow.schema.json",
+  "title": "VitaeFlow Resume Schema",
+  "description": "Official JSON Schema for VitaeFlow structured resume standard (v0.1.0). This schema defines a comprehensive, ATS-friendly format for embedding structured resume data in PDFs.",
+  "type": "object",
+  "required": ["$schema", "specVersion", "meta", "resume"],
+  "additionalProperties": true,
+  "properties": {
+    "$schema": { 
+      "type": "string", 
+      "format": "uri",
+      "description": "URI pointing to the JSON Schema specification used for validation"
+    },
+    "specVersion": { 
+      "type": "string", 
+      "const": "0.1.0",
+      "description": "Version of the VitaeFlow specification this resume conforms to"
+    },
+    "meta": {
+      "type": "object",
+      "description": "Metadata about the resume document itself, including versioning, localization, and tracking information",
+      "properties": {
+        "id": { 
+          "type": "string", 
+          "format": "uuid",
+          "description": "Unique identifier for this resume document, useful for tracking and deduplication"
+        },
+        "createdAt": { 
+          "type": "string", 
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this resume was first created"
+        },
+        "updatedAt": { 
+          "type": "string", 
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this resume was last modified"
+        },
+        "source": { 
+          "type": "string",
+          "description": "Application or system that generated this resume (e.g., 'vitaeflow-builder', 'linkedin-export')"
+        },
+        "version": { 
+          "type": "string",
+          "description": "Internal version number of this specific resume document"
+        },
+        "canonical": { 
+          "type": "string", 
+          "format": "uri",
+          "description": "Canonical URL where the authoritative version of this resume can be found"
+        },
+        "lastModified": { 
+          "type": "string", 
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of the last modification (deprecated, use updatedAt instead)"
+        },
+        "language": { 
+          "type": "string", 
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+          "description": "Primary language of the resume content using BCP 47 language tags (e.g., 'en', 'fr-FR')"
+        },
+        "country": { 
+          "type": "string", 
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2 country code representing the target job market or candidate location"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+
+    "resume": {
+      "type": "object",
+      "description": "Complete resume information organized into logical sections for optimal ATS parsing and human readability",
+      "required": ["basics", "experience"],
+      "additionalProperties": false,
+      "properties": {
+        "basics": {
+          "type": "object",
+          "description": "Essential personal and contact information, the foundation of any resume",
+          "required": ["lastName", "firstName", "email"],
+          "properties": {
+            "lastName": { 
+              "type": "string",
+              "description": "Family name or surname of the candidate"
+            },
+            "firstName": { 
+              "type": "string",
+              "description": "Given name or first name of the candidate"
+            },
+            "label": { 
+              "type": "string",
+              "description": "Professional title or role description (e.g., 'Senior Software Engineer', 'Marketing Manager')"
+            },
+            "pronouns": { 
+              "type": "string",
+              "description": "Preferred pronouns for the candidate (e.g., 'she/her', 'they/them')"
+            },
+            "title": { 
+              "type": "string",
+              "description": "Current job title or desired position"
+            },
+            "email": { 
+              "type": "string", 
+              "format": "email",
+              "description": "Primary email address for professional contact"
+            },
+            "phone": { 
+              "type": "string",
+              "description": "Primary phone number, preferably in international format"
+            },
+            "url": { 
+              "type": "string", 
+              "format": "uri",
+              "description": "Personal website, portfolio, or professional landing page URL"
+            },
+            "summary": { 
+              "type": "string",
+              "description": "Professional summary or objective statement, typically 2-4 sentences highlighting key qualifications"
+            },
+            "birthDate": { 
+              "$ref": "#/$defs/isoDate",
+              "description": "Date of birth in ISO format (YYYY-MM-DD). Include only if legally required or culturally expected"
+            },
+            "nationality": { 
+              "type": "string", 
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code representing candidate's nationality"
+            },
+            "maritalStatus": { 
+              "type": "string",
+              "description": "Marital status if relevant for the position or jurisdiction (e.g., 'single', 'married', 'divorced')"
+            },
+            "drivingLicense": { 
+              "type": "string",
+              "description": "Driving license information if relevant for the role (e.g., 'Valid US Driver's License', 'EU Category B')"
+            },
+            "location": { 
+              "$ref": "#/$defs/location",
+              "description": "Current residential location of the candidate"
+            },
+            "availability": {
+              "type": "object",
+              "description": "Information about when the candidate can start working",
+              "properties": {
+                "immediateStart": { 
+                  "type": "boolean",
+                  "description": "Whether the candidate can start immediately"
+                },
+                "noticePeriod": { 
+                  "type": "string",
+                  "description": "Required notice period for current employment (e.g., '2 weeks', '1 month')"
+                },
+                "preferredStartDate": { 
+                  "$ref": "#/$defs/isoDate",
+                  "description": "Earliest preferred start date"
+                }
+              },
+              "additionalProperties": false
+            },
+            "profiles": {
+              "type": "array",
+              "description": "Social media and professional network profiles",
+              "items": {
+                "type": "object",
+                "required": ["network", "url"],
+                "properties": {
+                  "network": { 
+                    "type": "string",
+                    "description": "Name of the social network or platform (e.g., 'LinkedIn', 'GitHub', 'Twitter')"
+                  },
+                  "username": { 
+                    "type": "string",
+                    "description": "Username or handle on the platform"
+                  },
+                  "url": { 
+                    "type": "string", 
+                    "format": "uri",
+                    "description": "Full URL to the profile page"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+
+        "experience": {
+          "type": "array",
+          "description": "Professional work experience, the core section that ATS systems focus on most heavily",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": ["position", "company", "startDate"],
+            "properties": {
+              "position": { 
+                "type": "string",
+                "description": "Job title or role name"
+              },
+              "company": { 
+                "type": "string",
+                "description": "Company, organization, or employer name"
+              },
+              "contractType": { 
+                "type": "string",
+                "description": "Type of employment contract (e.g., 'Full-time', 'Part-time', 'Contract', 'Internship')"
+              },
+              "startDate": { 
+                "$ref": "#/$defs/isoDate",
+                "description": "Employment start date"
+              },
+              "endDate": { 
+                "$ref": "#/$defs/isoDate",
+                "description": "Employment end date (omit if current position)"
+              },
+              "current": { 
+                "type": "boolean", 
+                "default": false,
+                "description": "Whether this is the candidate's current position"
+              },
+              "remote": { 
+                "type": "boolean",
+                "description": "Whether this position was/is remote work"
+              },
+              "teamSize": { 
+                "type": "number", 
+                "minimum": 1,
+                "description": "Size of the team the candidate worked with or managed"
+              },
+              "location": { 
+                "$ref": "#/$defs/location",
+                "description": "Geographic location where the work was performed"
+              },
+              "summary": { 
+                "type": "string",
+                "maxLength": 2000,
+                "description": "Brief description of the role and key responsibilities, optimized for ATS parsing"
+              },
+              "highlights": { 
+                "type": "array", 
+                "items": { "type": "string" },
+                "description": "Key accomplishments and achievements in bullet-point format"
+              },
+              "technologies": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Technologies, tools, programming languages, or methodologies used in this role"
+              },
+              "achievements": {
+                "type": "array",
+                "description": "Quantified achievements with measurable impact",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "description": { 
+                      "type": "string",
+                      "description": "Description of the achievement"
+                    },
+                    "metrics": {
+                      "type": "object",
+                      "description": "Quantifiable metrics associated with this achievement",
+                      "properties": {
+                        "value": { 
+                          "type": "number",
+                          "description": "Numeric value of the metric"
+                        },
+                        "unit": { 
+                          "type": "string",
+                          "description": "Unit of measurement (e.g., '%', '$', 'users', 'hours')"
+                        },
+                        "context": { 
+                          "type": "string",
+                          "description": "Additional context about the metric"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "labels": { 
+                "type": "array", 
+                "items": { "type": "string" },
+                "description": "Tags or categories that help classify this experience"
+              },
+              "projects": {
+                "type": "array",
+                "description": "Specific projects worked on during this employment",
+                "items": { "$ref": "#/$defs/projectItem" }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+
+        "education": {
+          "type": "array",
+          "description": "Educational background including formal degrees, certifications, and relevant coursework",
+          "items": { "$ref": "#/$defs/educationItem" }
+        },
+
+        "skills": {
+          "type": "object",
+          "description": "Comprehensive skills inventory organized by category for optimal ATS keyword matching",
+          "properties": {
+            "technical": {
+              "type": "array",
+              "description": "Technical skills including programming languages, frameworks, tools, and technologies",
+              "items": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { 
+                    "type": "string",
+                    "description": "Name of the technical skill"
+                  },
+                  "level": { 
+                    "type": "string",
+                    "enum": ["beginner", "intermediate", "advanced", "expert"],
+                    "description": "Proficiency level with this skill"
+                  },
+                  "yearsOfExperience": { 
+                    "type": "number", 
+                    "minimum": 0,
+                    "description": "Number of years of experience with this skill"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": ["programming", "framework", "database", "tool", "cloud", "other"],
+                    "description": "Category classification for better organization"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "soft": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Soft skills and interpersonal abilities (e.g., 'Leadership', 'Communication', 'Problem Solving')"
+            },
+            "languages": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/languageItem" },
+              "description": "Spoken and written language proficiencies"
+            }
+          },
+          "additionalProperties": false
+        },
+
+        "projects": {
+          "type": "array",
+          "description": "Standalone projects that demonstrate skills and experience, applicable across all industries and roles",
+          "items": {
+            "type": "object",
+            "required": ["name", "description"],
+            "properties": {
+              "name": { 
+                "type": "string",
+                "description": "Project name or title"
+              },
+              "description": { 
+                "type": "string",
+                "description": "Comprehensive description of the project, its goals, and outcomes"
+              },
+              "role": { 
+                "type": "string",
+                "description": "Your specific role or contribution to the project"
+              },
+              "startDate": { 
+                "$ref": "#/$defs/isoDate",
+                "description": "Project start date"
+              },
+              "endDate": { 
+                "$ref": "#/$defs/isoDate",
+                "description": "Project completion date"
+              },
+              "status": { 
+                "type": "string",
+                "enum": ["completed", "ongoing", "paused", "cancelled"],
+                "description": "Current status of the project"
+              },
+              "context": { 
+                "type": "string",
+                "enum": ["work", "personal", "volunteer", "academic", "freelance"],
+                "description": "Context in which the project was undertaken"
+              },
+              "url": { 
+                "type": "string", 
+                "format": "uri",
+                "description": "URL to project website, demo, or documentation"
+              },
+              "repository": { 
+                "type": "string", 
+                "format": "uri",
+                "description": "URL to source code repository (e.g., GitHub, GitLab)"
+              },
+              "technologies": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Technologies, tools, or methodologies used in the project"
+              },
+              "teamSize": { 
+                "type": "number", 
+                "minimum": 1,
+                "description": "Number of people involved in the project"
+              },
+              "budget": { 
+                "type": "number", 
+                "minimum": 0,
+                "description": "Project budget if applicable and relevant to showcase"
+              },
+              "metrics": {
+                "type": "object",
+                "description": "Quantifiable outcomes and impact metrics",
+                "properties": {
+                  "participants": { 
+                    "type": "number",
+                    "description": "Number of participants, users, or beneficiaries"
+                  },
+                  "revenue": { 
+                    "type": "number",
+                    "description": "Revenue generated or cost savings achieved"
+                  },
+                  "savings": { 
+                    "type": "number",
+                    "description": "Cost savings or efficiency improvements"
+                  },
+                  "efficiency": { 
+                    "type": "string",
+                    "description": "Efficiency improvements or performance gains"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+
+        "certifications": {
+          "type": "array",
+          "description": "Professional certifications, licenses, and credentials",
+          "items": { "$ref": "#/$defs/certificationItem" }
+        },
+
+        "achievements": {
+          "type": "array",
+          "description": "Awards, honors, and significant recognitions received",
+          "items": { "$ref": "#/$defs/achievementItem" }
+        },
+
+        "publications": {
+          "type": "array",
+          "description": "Published works including articles, books, research papers, and blog posts",
+          "items": { "$ref": "#/$defs/publicationItem" }
+        },
+
+        "volunteer": {
+          "type": "array",
+          "description": "Volunteer work and community involvement",
+          "items": { "$ref": "#/$defs/experienceItem" }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "isoDate": {
+      "type": "string",
+      "pattern": "^\\d{4}(-(0[1-9]|1[0-2]))?(-(0[1-9]|[12][0-9]|3[01]))?$",
+      "description": "Flexible ISO date format supporting YYYY, YYYY-MM, or YYYY-MM-DD for compatibility with various date precision needs"
+    },
+
+    "location": {
+      "type": "object",
+      "description": "Geographic location information",
+      "properties": {
+        "city": { 
+          "type": "string",
+          "description": "City or municipality name"
+        },
+        "region": { 
+          "type": "string",
+          "description": "State, province, or regional subdivision"
+        },
+        "country": { 
+          "type": "string", 
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2 country code"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "educationItem": {
+      "type": "object",
+      "description": "Individual education record including degrees, certifications, and relevant coursework",
+      "properties": {
+        "institution": { 
+          "type": "string",
+          "description": "Name of the educational institution"
+        },
+        "area": { 
+          "type": "string",
+          "description": "Field of study or academic discipline"
+        },
+        "studyType": { 
+          "type": "string",
+          "description": "Type of degree or qualification (e.g., 'Bachelor of Science', 'Master's', 'PhD')"
+        },
+        "startDate": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "Start date of the educational program"
+        },
+        "endDate": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "Graduation or completion date"
+        },
+        "gpa": { 
+          "type": "number",
+          "description": "Grade point average or equivalent academic performance metric"
+        },
+        "courses": { 
+          "type": "array", 
+          "items": { "type": "string" },
+          "description": "Relevant courses or subjects studied"
+        },
+        "location": { 
+          "$ref": "#/$defs/location",
+          "description": "Location of the educational institution"
+        },
+        "summary": { 
+          "type": "string",
+          "description": "Additional details about the educational experience"
+        },
+        "highlights": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Academic achievements, honors, or notable accomplishments"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "languageItem": {
+      "type": "object",
+      "description": "Language proficiency information",
+      "properties": {
+        "code": { 
+          "type": "string",
+          "description": "BCP 47 language code (e.g., 'en', 'fr', 'es-ES')"
+        },
+        "fluency": { 
+          "type": "string",
+          "description": "Proficiency level (e.g., 'Native', 'Fluent', 'Conversational', 'Basic')"
+        }
+      },
+      "required": ["code"],
+      "additionalProperties": false
+    },
+
+    "projectItem": {
+      "type": "object",
+      "description": "Project information that can be embedded within experience items",
+      "properties": {
+        "name": { 
+          "type": "string",
+          "description": "Project name or title"
+        },
+        "description": { 
+          "type": "string",
+          "description": "Brief description of the project and your contribution"
+        },
+        "url": { 
+          "type": "string", 
+          "format": "uri",
+          "description": "URL to project documentation, demo, or repository"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "achievementItem": {
+      "type": "object",
+      "description": "Awards, honors, and recognitions",
+      "properties": {
+        "title": { 
+          "type": "string",
+          "description": "Name or title of the award or achievement"
+        },
+        "date": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "Date the award was received or achievement was accomplished"
+        },
+        "awarder": { 
+          "type": "string",
+          "description": "Organization or entity that granted the award"
+        },
+        "summary": { 
+          "type": "string",
+          "description": "Description of the achievement and its significance"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "certificationItem": {
+      "type": "object",
+      "description": "Professional certifications and credentials",
+      "properties": {
+        "name": { 
+          "type": "string",
+          "description": "Full name of the certification"
+        },
+        "issuer": { 
+          "type": "string",
+          "description": "Organization that issued the certification"
+        },
+        "date": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "Date the certification was obtained"
+        },
+        "expiryDate": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "Certification expiration date, if applicable"
+        },
+        "url": { 
+          "type": "string", 
+          "format": "uri",
+          "description": "URL to verify the certification or view credentials"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "publicationItem": {
+      "type": "object",
+      "description": "Published works and scholarly contributions",
+      "properties": {
+        "name": { 
+          "type": "string",
+          "description": "Title of the publication"
+        },
+        "publisher": { 
+          "type": "string",
+          "description": "Publisher, journal, or platform where the work was published"
+        },
+        "releaseDate": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "Publication date"
+        },
+        "url": { 
+          "type": "string", 
+          "format": "uri",
+          "description": "URL to access the publication"
+        },
+        "summary": { 
+          "type": "string",
+          "description": "Brief description of the publication and its relevance"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "experienceItem": {
+      "type": "object",
+      "description": "Generic experience item used for volunteer work and similar activities",
+      "required": ["position", "company", "startDate"],
+      "properties": {
+        "position": { 
+          "type": "string",
+          "description": "Role or position title"
+        },
+        "company": { 
+          "type": "string",
+          "description": "Organization or company name"
+        },
+        "contractType": { 
+          "type": "string",
+          "description": "Type of arrangement (e.g., 'Volunteer', 'Part-time', 'Contract')"
+        },
+        "startDate": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "Start date of the engagement"
+        },
+        "endDate": { 
+          "$ref": "#/$defs/isoDate",
+          "description": "End date of the engagement"
+        },
+        "current": { 
+          "type": "boolean", 
+          "default": false,
+          "description": "Whether this is an ongoing engagement"
+        },
+        "location": { 
+          "$ref": "#/$defs/location",
+          "description": "Location where the activity took place"
+        },
+        "summary": { 
+          "type": "string",
+          "description": "Description of responsibilities and contributions"
+        },
+        "highlights": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Key accomplishments and achievements"
+        },
+        "labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tags or categories for this experience"
+        },
+        "projects": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/projectItem" },
+          "description": "Specific projects undertaken during this engagement"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
