@@ -1,0 +1,10 @@
+{
+  "latest": "v0.1.0",
+  "versions": ["v0.1.0"],
+  "schemas": {
+    "v0.1.0": {
+      "path": "schemas/v0.1.0/vitaeflow.schema.json",
+      "metadata": "schemas/v0.1.0/metadata.json"
+    }
+  }
+}
