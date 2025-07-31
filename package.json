@@ -1,24 +1,43 @@
 {
   "name": "@vitaeflow/vitae-schema",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Official JSON Schema specification for VitaeFlow resume standard - Pure JSON, multi-language compatible",
-  "main": "registry.json",
+  "main": "index.js",
+  "browser": "browser.js",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "browser": {
+        "import": "./browser.js",
+        "require": "./browser.js"
+      },
+      "node": {
+        "import": "./index.mjs",
+        "require": "./index.js"
+      },
+      "types": "./index.d.ts"
+    },
+    "./registry.json": "./registry.json",
+    "./schemas/*": "./schemas/*"
+  },
   "files": [
     "schemas/",
     "registry.json",
     "index.js",
+    "index.mjs",
+    "browser.js",
     "index.d.ts",
     "README.md"
   ],
   "scripts": {
+    "build": "node scripts/build-browser.js",
     "test": "node scripts/validate-examples.js",
     "validate": "node scripts/validate-examples.js",
     "validate-schema": "node scripts/validate-schema.js",
     "docs": "node scripts/generate-docs.js",
     "check-versions": "node scripts/check-versions.js",
-    "prepare": "npm test",
-    "prepublishOnly": "npm run validate && npm test",
+    "prepare": "npm run build && npm test",
+    "prepublishOnly": "npm run build && npm run validate && npm test",
     "prepack": "node scripts/build-package.js"
   },
   "homepage": "https://vitaeflow.org",
